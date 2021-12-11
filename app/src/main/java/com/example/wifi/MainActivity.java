@@ -1,5 +1,7 @@
 package com.example.wifi;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
@@ -11,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,6 +25,15 @@ public class MainActivity extends AppCompatActivity {
     private List<ScanResult> resultsError;
     private ListView Lista_wifi;
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+
+                } else {
+
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Lista_wifi = findViewById(R.id.Lista_wifi);
 
         wifiManager = (WifiManager)
-                context.getSystemService(Context.WIFI_SERVICE);
+                getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         BroadcastReceiver wifiScanReceiver = new BroadcastReceiver() {
             @Override
@@ -49,18 +61,20 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        context.registerReceiver(wifiScanReceiver, intentFilter);
+        registerReceiver(wifiScanReceiver, intentFilter);
 
         boolean success = wifiManager.startScan();
         if (!success) {
             // scan failure handling
             scanFailure();
+            Toast.makeText(this, "falha-2", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void scanSuccess() {
         resultsSucess = wifiManager.getScanResults();
+        Toast.makeText(this, "Sucesso", Toast.LENGTH_SHORT).show();
    //... use new scan results ...
     }
 
@@ -68,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // handle failure: new scan did NOT succeed
         // consider using old scan results: these are the OLD results!
         resultsError = wifiManager.getScanResults();
+        Toast.makeText(this, "falha", Toast.LENGTH_SHORT).show();
   //... potentially use older scan results ...
     }
 
