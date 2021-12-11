@@ -38,9 +38,11 @@ public class MainActivity extends AppCompatActivity {
                         WifiManager.EXTRA_RESULTS_UPDATED, false);
                 if (success) {
                     scanSuccess();
+                    exibeLista(resultsSucess);
                 } else {
                     // scan failure handling
                     scanFailure();
+                    exibeLista(resultsError);
                 }
             }
         };
